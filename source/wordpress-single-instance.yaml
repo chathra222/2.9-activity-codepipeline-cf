@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'WordPress
-  is web software you can use to create a beautiful website or blog. This template
+Description: 'WordPress is web software you can use to create a beautiful website or blog. This template
   installs WordPress with a local MySQL database for storage. It demonstrates using
   the AWS CloudFormation bootstrap scripts to deploy WordPress. **WARNING** This template
   creates an Amazon EC2 instance. You will be billed for the AWS resources used if
@@ -249,11 +248,12 @@ Resources:
                 #!/bin/bash -xe
                 yum update
                 amazon-linux-extras enable php8.0
-                yum install php-cli php-pdo php-fpm php-json php-mysqlnd
+                yum install php php-cli php-pdo php-fpm php-json php-mysqlnd -y
                 cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
                 sed -i "s/'database_name_here'/'${DBName}'/g" wp-config.php
                 sed -i "s/'username_here'/'${DBUser}'/g" wp-config.php
-                sed -i "s/'password_here'/'${DBPassword}'/g" wp-config.php                                    
+                sed -i "s/'password_here'/'${DBPassword}'/g" wp-config.php       
+                service httpd restart                           
               group: root
               mode: '000500'
               owner: root
@@ -286,7 +286,7 @@ Resources:
           sources:
             /var/www/html: http://wordpress.org/latest.tar.gz
     Properties:
-      ImageId: !FindInMap [AWSRegionArch2AMI, !Ref 'AWS::Region', !FindInMap [AWSInstanceType2Arch, !Ref InstanceType, Arch]]      
+      ImageId: ami-08b96001e0e7a2b81      
       InstanceType:
         Ref: InstanceType
       KeyName:
